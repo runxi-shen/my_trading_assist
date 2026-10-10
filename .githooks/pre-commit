@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+# Blocks any commit that would publish a secret or personal financial data.
+# Installed by: scripts/install_hooks.sh   (git config core.hooksPath .githooks)
+set -e
+echo "pre-commit: security scan (staged)"
+python3 scripts/security_scan.py --staged || {
+    echo ""
+    echo "COMMIT BLOCKED. Fix the findings above, or add a justified entry to"
+    echo "ALLOWLIST in scripts/security_scan.py. Do not bypass with --no-verify."
+    exit 1
+}

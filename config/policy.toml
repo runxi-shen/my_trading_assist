@@ -1,0 +1,57 @@
+# Risk policy. This file is authoritative: every order path must validate against it.
+# Changing a limit here is a deliberate, reviewable act.
+
+[account]
+# This repository is PUBLIC. Never hardcode an account number here.
+# Supply it at runtime instead:  export QUANTTRADER_ACCOUNT=...
+account_number_env = "QUANTTRADER_ACCOUNT"
+# Only a cash account is modelled: T+1 settlement, no margin, no shorting.
+# Verified 2026-10-09: the agent-enabled account is type "cash", the default
+# margin account is not agent-enabled at all.
+type = "cash"
+broker = "robinhood"
+
+[protection]
+# Positions the strategy may never buy, sell, or rebalance. Never auto-clear this.
+protected_symbols = ["SMMT"]
+
+[universe]
+# Long-only universe the strategy is allowed to hold.
+permitted_symbols = ["RXRX", "TEM"]
+# Existing holdings the user flagged as eligible for eventual rotation.
+# NOT tradable by default: rotation realises losses and needs explicit approval.
+rotation_candidates = ["BMNR", "HIMS", "PGY", "STNE", "SOFI"]
+# Unlisted / non-quotable. Tradability check required before any action.
+quarantined_symbols = ["TGHI"]
+
+[risk]
+long_only = true
+leverage = false
+options = false
+shorting = false
+
+max_weight_per_symbol = 0.40    # of strategy equity
+cash_reserve_fraction = 0.20    # never deploy below this
+max_gross_exposure = 0.80
+max_drawdown = 0.10             # brake: freeze entries, flatten, require human review
+rebalance_tolerance = 0.02      # ignore weight drift smaller than 2% of equity (no micro-churn)
+max_daily_turnover = 1.00       # gross notional traded / equity, per day
+max_trades_per_day = 4          # keeps clear of pattern-day-trader style churn
+
+[execution]
+slippage_bps_each_side = 10     # baseline modelling assumption
+stress_slippage_bps = [25, 50]  # required to also pass
+settlement_days = 1             # cash account T+1; proceeds reusable next session
+allow_fractional_shares = true
+min_order_notional = 1.00
+
+[safety]
+# Live order placement stays off until every gate below is satisfied AND a human flips it.
+live_orders_enabled = false
+require_human_approval = true   # keep the broker-side toggle ON as well
+kill_switch_file = "KILL"
+paper_before_live_sessions = 20 # forward paper sessions required before live is even considered
+
+[fees]
+commission = 0.0                # Robinhood equity trades are commission-free
+sec_fee_bps_on_sell = 0.00278   # SEC Section 31 fee, sells only (approx current rate)

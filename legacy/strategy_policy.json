@@ -1,0 +1,17 @@
+{
+  "mode": "research_only",
+  "permitted_symbols": ["RXRX", "TEM"],
+  "protected_symbols": ["SMMT"],
+  "eligible_reallocation_symbols": ["BMNR", "HIMS", "PGY", "STNE", "SOFI"],
+  "unlisted_holding_requires_separate_tradability_check": "TGHI",
+  "capital_scope": "All Agentic account funds and holdings except SMMT; determine deployment baseline after reconciliation",
+  "goal": "Double managed capital excluding SMMT by 2026-12-31; exclude net external deposits from strategy returns",
+  "backtest_illustrative_capital": 1052.50,
+  "maximum_allocation_per_symbol": 0.40,
+  "cash_reserve_fraction": 0.20,
+  "maximum_strategy_drawdown": 0.10,
+  "drawdown_status": "user_confirmed; managed capital only; gap losses may overshoot",
+  "long_only": true,
+  "leverage": false,
+  "allow_live_orders": false
+}

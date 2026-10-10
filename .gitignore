@@ -1,3 +1,81 @@
+# ---------------------------------------------------------------------------
+# SECURITY. Everything here is either a secret, personal financial data, or
+# bulk data we do not redistribute. Read scripts/security_scan.py before
+# removing a line from this file.
+# ---------------------------------------------------------------------------
+
+# --- credentials and secrets: never track, in any form ---
+.env
+.env.*
+!.env.example
+.envrc.local
+.netrc
+.pgpass
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+id_rsa
+id_ed25519
+id_ecdsa
+auth.json
+credentials.json
+credentials
+secrets.json
+secrets.toml
+secrets.yaml
+secrets.yml
+.ssh/
+.aws/
+.gcp/
+kubeconfig
+
+# --- personal financial data: never track ---
+local/
+account_snapshot.md
+*account_snapshot*
+holdings*.csv
+positions*.csv
+
+# --- bulk broker market data: do not redistribute (broker data terms) ---
+# Re-fetch with: python3 scripts/fetch_data.py
+# The SHA-256 of each snapshot is recorded in BACKTEST_REPORT.md so a re-fetch
+# can be verified. Uncomment the next two lines only if you have checked that
+# redistribution is permitted for your data source.
+data/*.json
+data/forward_*.json
+research/universe/
+
+# --- generated output: regenerable from source + data ---
+results/*.json
+results/*.jsonl
+results/*.csv
+
+# --- runtime / safety ---
+KILL
+
+# --- nix / direnv ---
+.direnv/
+result
+
+# --- python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- editors / OS ---
+
+# ---------------------------------------------------------------------------
+# Python / tooling noise (from the GitHub standard Python template)
+# ---------------------------------------------------------------------------
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -151,7 +229,6 @@ activemq-data/
 
 # Environments
 .env
-.envrc
 .venv
 env/
 venv/

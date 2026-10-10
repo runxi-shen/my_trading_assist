@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# Last gate before anything leaves this machine.
+# Scans the ENTIRE git history, because a secret that was ever committed is
+# still published by a push, even if a later commit deleted it.
+set -e
+echo "pre-push: security scan (full history)"
+python3 scripts/security_scan.py --history || {
+    echo ""
+    echo "PUSH BLOCKED. History contains a finding. If a real secret was ever"
+    echo "committed, rotate it FIRST, then rewrite history before pushing."
+    exit 1
+}
+echo "pre-push: security scan (working tree)"
+python3 scripts/security_scan.py || {
+    echo "PUSH BLOCKED. Working tree contains a finding."
+    exit 1
+}

@@ -1,0 +1,20 @@
+[project]
+name = "quanttrader"
+version = "0.1.0"
+description = "Research-first, guard-railed trading harness for the Robinhood agentic cash account"
+requires-python = ">=3.11"
+dependencies = []          # stdlib only: tomllib, urllib, statistics, json
+
+[project.scripts]
+quant-monitor = "quanttrader.cli:monitor"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
