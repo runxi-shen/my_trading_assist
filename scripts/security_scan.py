@@ -186,6 +186,15 @@ def scan_text(path: str, text: str, findings: list[Finding]) -> None:
                 break
 
 
+def _should_scan(rel: str) -> bool:
+    """Lock files and binaries are machine-generated and never secrets."""
+    name = rel.rsplit("/", 1)[-1]
+    return (Path(rel).suffix.lower() not in SKIP_SUFFIXES
+            and name not in SKIP_NAMES
+            and not FORBIDDEN_NAMES.search(rel)
+            or bool(NOT_FORBIDDEN.search(rel)))
+
+
 def scan(staged_only: bool = False, all_files: bool = False) -> list[Finding]:
     findings: list[Finding] = []
     files = walk_files() if all_files else tracked_files(staged_only)
@@ -194,8 +203,10 @@ def scan(staged_only: bool = False, all_files: bool = False) -> list[Finding]:
             findings.append(Finding(rel, 0, "forbidden file",
                                     "this filename must never be tracked"))
             continue
+        if not _should_scan(rel):
+            continue
         p = REPO / rel
-        if not p.is_file() or p.suffix.lower() in SKIP_SUFFIXES or p.name in SKIP_NAMES:
+        if not p.is_file():
             continue
         if p.stat().st_size > MAX_BYTES:
             continue
@@ -229,6 +240,8 @@ def scan_history() -> list[Finding]:
                                         f"present at {rev[:8]}"))
                 continue
             seen.add(rel)
+            if not _should_scan(rel):
+                continue
             blob = subprocess.run(["git", "show", f"{rev}:{rel}"], cwd=REPO,
                                   capture_output=True).stdout
             if len(blob) > MAX_BYTES or b"\0" in blob[:2000]:
